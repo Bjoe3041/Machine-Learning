@@ -13,7 +13,7 @@ class PartedFile:
         from Vectorizer import  Vectorizer
         import os
 
-        data = pd.read_excel("Corrected_2_Updated_Preferred_titles.xlsx")
+        data = pd.read_excel("Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx")
 
         from Preprocesser import Preprocesser
         preprocesser = Preprocesser()
