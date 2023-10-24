@@ -64,7 +64,7 @@ class PartedFile:
             else:
                 header = RED
             print(header + "input: ", s)
-            print("{:.2f}".format(value[0][1])+RESET)
+            print("{:.3f}".format(value[0][1])+RESET)
 
 
         #model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))
