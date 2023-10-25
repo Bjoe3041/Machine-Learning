@@ -1,3 +1,6 @@
+import sys
+
+
 class UnpartedFile:
     def run_all(self):
         import pandas as pd
@@ -16,10 +19,8 @@ class UnpartedFile:
 
         data = pd.read_excel("Corrected_2_Updated_Preferred_titles.xlsx")
 
-
         # data = pd.read_excel("/content/drive/MyDrive/Colab Notebooks/Elsevier projekt/Preferred_titles.xlsx")
         # data = pd.read_excel("/content/drive/MyDrive/Colab Notebooks/Elsevier projekt/Skralde_data.xlsx")
-
 
         def preprocess_excel_column(dataframe, column_name):
             # Extract text data from the specified column
@@ -39,7 +40,8 @@ class UnpartedFile:
 
                 # Removing stopwords and lemmatization
                 lemmatizer = WordNetLemmatizer()
-                words = [lemmatizer.lemmatize(word) for word in text_lower.split() if word.isalnum() and word not in stop_words]
+                words = [lemmatizer.lemmatize(word) for word in text_lower.split() if
+                         word.isalnum() and word not in stop_words]
 
                 # Joining words back to sentences
                 processed_text = ' '.join(words)
@@ -49,10 +51,10 @@ class UnpartedFile:
             processed_df = dataframe.copy()
             processed_df[column_name] = processed_text_data
 
-            print(processed_df)
+            print("processed dataframe head 10 to string")
+            print(processed_df.head(10).to_string())
 
             return processed_df
-
 
         # Refator TF-IDF ned i seperat metode som vi lettere kan udskife vuderingskriterier
         def td_idf(list):
@@ -62,7 +64,6 @@ class UnpartedFile:
             # Split the vectors back into preferred and non-preferred groups
             tfidf_pref_cleaned = tfidf_matrix_cleaned[:len(paired_data_cleaned)]
             tfidf_non_pref_cleaned = tfidf_matrix_cleaned[len(paired_data_cleaned):]
-
 
         def sort_data_by_preference(Dataframe: data, column_name):
             # Sort the data by doi and Preferred columns to ensure pairs are adjacent
@@ -84,10 +85,10 @@ class UnpartedFile:
             combined_titles_cleaned = paired_data_cleaned[f'{column_name}_pref'].tolist() + paired_data_cleaned[
                 f'{column_name}_non_pref'].tolist()
 
-            print (combined_titles_cleaned)
+            print("combined titles cleaned head 10 to string")  # TODO never reaches this?
+            print(combined_titles_cleaned.head(10).to_string())
 
             return combined_titles_cleaned
-
 
         def rename_columns(data):
             num_columns = len(data.columns)
@@ -104,11 +105,12 @@ class UnpartedFile:
 
             return renamed_data
 
-
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
 
         data_preprocessed = preprocess_excel_column(data, "Title")
-        print(data_preprocessed)
+
+        print("data preprocessed head 10 to string")
+        print(data_preprocessed.head(10).to_string())
 
         # Sort the data by doi and Preferred columns to ensure pairs are adjacent
         data_sorted = data_preprocessed.sort_values(by=['doi', 'Title_value'], ascending=[True, False])
@@ -131,7 +133,8 @@ class UnpartedFile:
         paired_data_cleaned = paired_data.dropna().reset_index(drop=True)
 
         # Combine the cleaned preferred and non-preferred titles
-        combined_titles_cleaned = paired_data_cleaned['Title_pref'].tolist() + paired_data_cleaned['Title_non_pref'].tolist()
+        combined_titles_cleaned = paired_data_cleaned['Title_pref'].tolist() + paired_data_cleaned[
+            'Title_non_pref'].tolist()
 
         # Perform TF-IDF transformation on the cleaned combined titles
         tfidf_matrix_cleaned = tfidf_vectorizer.fit_transform(combined_titles_cleaned)
@@ -141,7 +144,8 @@ class UnpartedFile:
         tfidf_non_pref_cleaned = tfidf_matrix_cleaned[len(paired_data_cleaned):]
 
         # Convert the sparse matrices to DataFrames for ease of use
-        tfidf_pref_df_cleaned = pd.DataFrame(tfidf_pref_cleaned.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+        tfidf_pref_df_cleaned = pd.DataFrame(tfidf_pref_cleaned.toarray(),
+                                             columns=tfidf_vectorizer.get_feature_names_out())
         tfidf_non_pref_df_cleaned = pd.DataFrame(tfidf_non_pref_cleaned.toarray(),
                                                  columns=tfidf_vectorizer.get_feature_names_out())
 
@@ -152,6 +156,8 @@ class UnpartedFile:
         X = tfidf_pref_df_cleaned - tfidf_non_pref_df_cleaned
         X_new = pd.concat([X, -X], ignore_index=True)
         y_new = [1] * len(X) + [0] * len(X)
+
+        print("combined feature matrices with values")
         print(X_new)
 
         # Split the new data into training and validation sets
@@ -166,7 +172,7 @@ class UnpartedFile:
         y_pred_new = model_new.predict(X_val_new)
 
         accuracy_new = accuracy_score(y_val_new, y_pred_new)
-        print(str((accuracy_new) * 100) + " %")
+        print(str((accuracy_new) * 100) + " % - single run")
 
         accuracies = []
         for i in range(50):
@@ -184,7 +190,10 @@ class UnpartedFile:
             accuracy_new = accuracy_score(y_val_new, y_pred_new)
             accuracies.append(accuracy_new)
 
-        print(str((sum(accuracies) / len(accuracies)) * 100) + " %")
+            sys.stdout.write('.')  # a loading bar while waiting for the while loop to finish
+            sys.stdout.flush()
+
+        print("\n" + str((sum(accuracies) / len(accuracies)) * 100) + " % - avg on multiple runs")
 
         # import pandas as pd
         # import numpy as np
