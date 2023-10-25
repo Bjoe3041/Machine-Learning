@@ -34,7 +34,7 @@ class MenuHoster:
         pass
 
     def thrd_open_apiview(self):
-        os.system(f"{sys.executable} Machine_Learning/api_server.py")
+        os.system(f"{sys.executable} ./api_server.py")
         print("apiview clicked")
 
     def open_apiview(self):
