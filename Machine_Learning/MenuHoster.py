@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 import os
 import sys
 import threading
+from MLController import MLController
+
 
 class MenuHoster:
     def hostmenu(self):
@@ -14,7 +16,7 @@ class MenuHoster:
         root.config(menu=menu)
         submenu = tk.Menu(menu)
         menu.add_cascade(label="Functions", menu=submenu)
-        submenu.add_command(label="Smth i dunno yet", command=self.function1)
+        submenu.add_command(label="Retrain", command=self.function1)
         submenu.add_command(label="Smth i dunno yet", command=self.function2)
         buttonTrial = tk.Button(root, width=50, text="Trial run", command=self.open_trialview)
         buttonAccuracy = tk.Button(root, width=50, text="Accuracy", command=self.open_accuracyview)
@@ -41,12 +43,22 @@ class MenuHoster:
 
 
     def function1(self):
-        # Add your code here for the first function
-        pass
+        mlc = MLController()
+        modelname = "model_test1_gaming"
+        vectorizername = "vector_test1_gaming"
+
+        model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
+        mlc.savemodel(model, vectorizer, modelname, vectorizername)
 
 
     def function2(self):
-        # Add your code here for the first function
+        mlc = MLController()
+        modelname = "model_test1_gaming"
+        vectorizername = "vector_test1_gaming"
+        # mlc.savemodel(model, vectorizer, modelname, vectorizername)
+        loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
+
+        print(mlc.evaluate(loadedmodel, loadedvectorizer, "role"))
         pass
 
 
