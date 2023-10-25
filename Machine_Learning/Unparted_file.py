@@ -49,6 +49,8 @@ class UnpartedFile:
             processed_df = dataframe.copy()
             processed_df[column_name] = processed_text_data
 
+            print(processed_df)
+
             return processed_df
 
 
@@ -81,6 +83,8 @@ class UnpartedFile:
             # Combine the cleaned preferred and non-preferred titles
             combined_titles_cleaned = paired_data_cleaned[f'{column_name}_pref'].tolist() + paired_data_cleaned[
                 f'{column_name}_non_pref'].tolist()
+
+            print (combined_titles_cleaned)
 
             return combined_titles_cleaned
 
