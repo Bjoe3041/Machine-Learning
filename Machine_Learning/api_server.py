@@ -12,7 +12,20 @@ def openapi():
         textConsole.insert(tk.END, "\n" + "STATUS REQUEST")
         return jsonify({"status": "Gaming123, we up here bois"})
 
+    @app.route('/api/check', methods=['POST'])
+    def convert_string_to_integer():
+        data = request.get_json()  # Assumes the client sends JSON data
+        title = data['title']  # Assuming the client sends a JSON object with a key 'input_string'
+
+        result = ml_getvalue()
+
+        return jsonify({"result": result})
+
     app.run()
+
+def ml_getvalue():
+    pass
+
 
 def start_api_thread():
     api_thread = threading.Thread(target=openapi)

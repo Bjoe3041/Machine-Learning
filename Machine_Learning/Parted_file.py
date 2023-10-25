@@ -18,12 +18,12 @@ class PartedFile:
         from Preprocesser import Preprocesser
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
-        #print(data_preprocessed)
+        # print(data_preprocessed)
 
-        #_______ vectorizer
+        # _______ vectorizer
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
         vectorizer = Vectorizer()
-        results = vectorizer.TFIDF_Vectorize(data_preprocessed,tfidf_vectorizer)
+        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
         X_new = results[0]
         y_new = results[1]
 
