@@ -47,4 +47,4 @@ class MLController:
         return loaded_model, loaded_vectorizer
 
     def evaluate(self, model, vectorizer, inputstring):
-        return model.predict_proba(vectorizer.transform(["role"]))[0][1]
+        return model.predict_proba(vectorizer.transform([inputstring]))[0][1]

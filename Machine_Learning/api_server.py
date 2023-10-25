@@ -1,6 +1,7 @@
 import threading
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import tkinter as tk
+from MLController import MLController
 
 def openapi():
     app = Flask(__name__)
@@ -17,15 +18,18 @@ def openapi():
         data = request.get_json()  # Assumes the client sends JSON data
         title = data['title']  # Assuming the client sends a JSON object with a key 'input_string'
 
-        result = ml_getvalue()
+        result = ml_getvalue(title)
 
         return jsonify({"result": result})
 
     app.run()
 
-def ml_getvalue():
-    pass
-
+def ml_getvalue(value):
+    mlc = MLController()
+    modelname = "model_test1_gaming"
+    vectorizername = "vector_test1_gaming"
+    loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
+    return mlc.evaluate(loadedmodel, loadedvectorizer, value)
 
 def start_api_thread():
     api_thread = threading.Thread(target=openapi)
