@@ -3,10 +3,10 @@ from Parted_file import PartedFile
 from MenuHoster import MenuHoster
 pf = PartedFile()
 
-menu = MenuHoster()
-menu.hostmenu()
+# menu = MenuHoster()
+# menu.hostmenu()
 
-#pf.run_all()
+pf.run_all()
 
 #from Unparted_file import UnpartedFile
 #upf = UnpartedFile()

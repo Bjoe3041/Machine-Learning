@@ -157,7 +157,7 @@ class UnpartedFile:
         X_new = pd.concat([X, -X], ignore_index=True)
         y_new = [1] * len(X) + [0] * len(X)
 
-        print("combined feature matrices with values")
+        print("combined feature matrices with values - training set")
         print(X_new)
 
         # Split the new data into training and validation sets
