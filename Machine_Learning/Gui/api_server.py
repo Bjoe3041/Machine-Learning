@@ -1,7 +1,7 @@
 import threading
 from flask import Flask, request, jsonify
 import tkinter as tk
-from Controller import MLController
+from Controller.MLController import MLController
 
 def openapi():
     app = Flask(__name__)
@@ -29,7 +29,10 @@ def ml_getvalue(value):
     modelname = "model_test1_gaming"
     vectorizername = "vector_test1_gaming"
     loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
-    return mlc.evaluate(loadedmodel, loadedvectorizer, value)
+
+    retvalue = mlc.evaluate(loadedmodel, loadedvectorizer, value)
+    textConsole.insert(tk.END, "\n" + "EVAL REQUEST - ["+value+"][" + f"{retvalue:.3f}" + "]")
+    return retvalue
 
 def start_api_thread():
     api_thread = threading.Thread(target=openapi)
