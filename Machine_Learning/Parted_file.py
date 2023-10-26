@@ -26,13 +26,13 @@ class PartedFile:
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))  # TODO agree on ngram range
         vectorizer = Vectorizer()
         results = vectorizer.TFIDF_Vectorize(data_preprocessed,tfidf_vectorizer)
-        X_new = results[0]
-        y_new = results[1]
+        X_new = results[0]  # a dataframe
+        y_new = results[1]  # a list
 
         print("combined feature matrices with values - training set")
-        print(X_new)
-        print("combined feature matrices with values - test set")
-        print(y_new)
+        print(X_new)  # can be sorted by ".sort_values(by=['youth'])"
+        # print("combined feature matrices with values - test set")
+        # print(y_new)  # just a list of 0 and 1's
 
         # # MODEL TRAINING
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
