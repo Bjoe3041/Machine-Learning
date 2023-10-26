@@ -1,12 +1,12 @@
 import threading
 from flask import Flask, request, jsonify
 import tkinter as tk
-from MLController import MLController
+from Controller import MLController
 
 def openapi():
     app = Flask(__name__)
     print("apiview opened")
-    textConsole.insert(tk.END, "\n" + "API STARTED")
+    textConsole.insert(tk.END, "API STARTED")
 
     @app.route('/api/status', methods=['GET'])
     def get_status():
@@ -35,6 +35,7 @@ def start_api_thread():
     api_thread = threading.Thread(target=openapi)
     api_thread.daemon = True  # Set the thread as a daemon so it will exit when the main program exits
     api_thread.start()
+
 
 newwindow = tk.Tk()
 newwindow.title("ML Api Window")

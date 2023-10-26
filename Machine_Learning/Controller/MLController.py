@@ -4,13 +4,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-from Vectorizer import Vectorizer
+from Model.Vectorizer import Vectorizer
+from Model.Preprocesser import Preprocesser
 
 
 class MLController:
     def trainmodel(self, datapath):
         data = pd.read_excel(datapath)
-        from Preprocesser import Preprocesser
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
         # /\-- Preprocess data
@@ -30,19 +30,21 @@ class MLController:
         return model_new, tfidf_vectorizer
 
     def savemodel(self, model, vectorizer, modelname, vectorizername):
+        save_directory = "../Saves/"
         model_filename = modelname + '.pkl'
-        joblib.dump(model, model_filename)
+        joblib.dump(model, save_directory+model_filename)
 
         # Save the vectorizer to disk
         vectorizer_filename = vectorizername + '.pkl'
-        joblib.dump(vectorizer, vectorizer_filename)
+        joblib.dump(vectorizer, save_directory+vectorizer_filename)
 
     def loadmodel(self, model_filename, vectorizer_filename):
         # Load the trained model from disk
-        loaded_model = joblib.load(model_filename+'.pkl')
+        save_directory = "../Saves/"
+        loaded_model = joblib.load(save_directory+model_filename+'.pkl')
 
         # Load the vectorizer from disk
-        loaded_vectorizer = joblib.load(vectorizer_filename+'.pkl')
+        loaded_vectorizer = joblib.load(save_directory+vectorizer_filename+'.pkl')
 
         return loaded_model, loaded_vectorizer
 
