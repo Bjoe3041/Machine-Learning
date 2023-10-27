@@ -2,14 +2,14 @@ import joblib
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from Model.Vectorizer import Vectorizer
 from Model.Preprocesser import Preprocesser
 
 
 class MLController:
-    def trainmodel(self, datapath):
+    @staticmethod
+    def trainmodel(datapath):
         data = pd.read_excel(datapath)
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
@@ -29,7 +29,8 @@ class MLController:
 
         return model_new, tfidf_vectorizer
 
-    def savemodel(self, model, vectorizer, modelname, vectorizername):
+    @staticmethod
+    def savemodel(model, vectorizer, modelname, vectorizername):
         save_directory = "Machine_Learning/Saves/"
         model_filename = modelname + '.pkl'
         joblib.dump(model, save_directory+model_filename)
@@ -38,7 +39,8 @@ class MLController:
         vectorizer_filename = vectorizername + '.pkl'
         joblib.dump(vectorizer, save_directory+vectorizer_filename)
 
-    def loadmodel(self, model_filename, vectorizer_filename):
+    @staticmethod
+    def loadmodel(model_filename, vectorizer_filename):
         # Load the trained model from disk
         save_directory = "Machine_Learning/Saves/"
         loaded_model = joblib.load(save_directory+model_filename+'.pkl')
@@ -48,5 +50,6 @@ class MLController:
 
         return loaded_model, loaded_vectorizer
 
-    def evaluate(self, model, vectorizer, inputstring):
+    @staticmethod
+    def evaluate(model, vectorizer, inputstring):
         return model.predict_proba(vectorizer.transform([inputstring]))[0][1]

@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import tkinter as tk
 from Controller.MLController import MLController
 
+
 def openapi():
     app = Flask(__name__)
     print("apiview opened")
@@ -24,6 +25,7 @@ def openapi():
 
     app.run()
 
+
 def ml_getvalue(value):
     mlc = MLController()
     modelname = "model_test1_gaming"
@@ -34,9 +36,10 @@ def ml_getvalue(value):
     textConsole.insert(tk.END, "\n" + "EVAL REQUEST - ["+value+"][" + f"{retvalue:.3f}" + "]")
     return retvalue
 
+
 def start_api_thread():
     api_thread = threading.Thread(target=openapi)
-    api_thread.daemon = True  # Set the thread as a daemon so it will exit when the main program exits
+    api_thread.daemon = True  # Set the thread as a daemon, so it will exit when the main program exits
     api_thread.start()
 
 
@@ -52,20 +55,43 @@ console_bg_color = "#201924"
 labelTitle = tk.Label(newwindow, text="API SERVERSIDE")
 labelTitle.config(font=("Helvetica", 14), bg=console_bg_color, fg=console_text_color)
 
-frame = tk.Frame(newwindow, padx=1, pady=1, bg='#1c1f21') # i added this frame so i can pad the text
+textConsole = tk.Text(newwindow,
+                      highlightcolor='#6dc0d1',
+                      bg=console_bg_color,
+                      borderwidth=4,
+                      fg=console_text_color,
+                      font='Helvetica')
 
-textConsole = tk.Text(frame, highlightcolor='#6dc0d1', bg=console_bg_color, borderwidth=4, fg=console_text_color, font='Helvetica', width=45)
-b1 = tk.Button(newwindow, bg = console_text_color, fg = console_bg_color, width=50, height = 1, text="HOST API", command=start_api_thread)
-b2 = tk.Button(newwindow, bg = console_text_color, fg = console_bg_color, width=50, height = 1, text="Exit", command=newwindow.destroy)
+b1 = tk.Button(newwindow,
+               bg=console_text_color,
+               fg=console_bg_color,
+               width=50,
+               height=1,
+               text="HOST API",
+               command=start_api_thread)
 
+b2 = tk.Button(newwindow,
+               bg=console_text_color,
+               fg=console_bg_color,
+               width=50,
+               height=1,
+               text="Exit",
+               command=newwindow.destroy)
 
 padding_frame = tk.Frame(newwindow, height=20, bg='#1c1f21')
 
-labelTitle.pack()
-frame.pack(fill=tk.BOTH, expand=True)
-textConsole.pack()
-b1.pack(pady=10)
-b2.pack(pady=1)
-padding_frame.pack()
+# Configure grid for widgets
+labelTitle.grid(row=0, column=0, columnspan=2)
+textConsole.grid(row=1, column=0, columnspan=2, sticky="nsew")  # Add sticky to make it expand
+b1.grid(row=2, column=0, padx=10, pady=10)
+b2.grid(row=2, column=1, padx=10, pady=10)
+padding_frame.grid(row=3, column=0, columnspan=2)
+
+# Configure column weights to make both columns expand with window width
+newwindow.columnconfigure(0, weight=1)
+newwindow.columnconfigure(1, weight=1)
+
+# Configure row weight to make the Text widget expand vertically
+newwindow.rowconfigure(1, weight=1)
 
 newwindow.mainloop()

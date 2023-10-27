@@ -9,4 +9,3 @@ if mode == "console":
 else:
     menu = MenuHoster()
     menu.hostmenu()
-
