@@ -33,7 +33,10 @@ class MenuHoster:
         pass
 
     def thrd_open_apiview(self):
-        os.system(f"{sys.executable} api_server.py")
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "api_server.py")
+        os.system(f"{sys.executable} {script_path}")
+        #os.system(f"{sys.executable} api_server.py")
     def open_apiview(self):
         apiview_thread = threading.Thread(target=self.thrd_open_apiview)
         apiview_thread.daemon = True  # Set the thread as a daemon so it will exit when the main program exits
@@ -45,7 +48,10 @@ class MenuHoster:
         modelname = "model_test1_gaming"
         vectorizername = "vector_test1_gaming"
 
-        model, vectorizer = mlc.trainmodel('..'+'/Corrected_2_Updated_Preferred_titles.xlsx')
+        pth = os.getcwd()
+        print(os.listdir(pth))
+
+        model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
         mlc.savemodel(model, vectorizer, modelname, vectorizername)
 
 

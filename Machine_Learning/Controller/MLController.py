@@ -30,7 +30,7 @@ class MLController:
         return model_new, tfidf_vectorizer
 
     def savemodel(self, model, vectorizer, modelname, vectorizername):
-        save_directory = "../Saves/"
+        save_directory = "Machine_Learning/Saves/"
         model_filename = modelname + '.pkl'
         joblib.dump(model, save_directory+model_filename)
 
@@ -40,7 +40,7 @@ class MLController:
 
     def loadmodel(self, model_filename, vectorizer_filename):
         # Load the trained model from disk
-        save_directory = "../Saves/"
+        save_directory = "Machine_Learning/Saves/"
         loaded_model = joblib.load(save_directory+model_filename+'.pkl')
 
         # Load the vectorizer from disk
