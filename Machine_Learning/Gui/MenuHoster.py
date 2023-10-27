@@ -16,7 +16,7 @@ class MenuHoster:
         submenu = tk.Menu(menu)
         menu.add_cascade(label="Functions", menu=submenu)
         submenu.add_command(label="Retrain", command=self.retrain)
-        submenu.add_command(label="Smth i dunno yet", command=self.quicktest)
+        submenu.add_command(label="Quicktest to console", command=self.quicktest)
         button_trial = tk.Button(root, width=50, text="Trial run", command=self.open_trialview)
         button_accuracy = tk.Button(root, width=50, text="Accuracy", command=self.open_accuracyview)
         button_api = tk.Button(root, width=50, text="Host as api", command=self.open_apiview)
