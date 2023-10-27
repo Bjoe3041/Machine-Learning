@@ -1,5 +1,12 @@
-
+from Unparted_file import UnpartedFile
 from MenuHoster import MenuHoster
-menu = MenuHoster()
-menu.hostmenu()
+
+mode = "console"
+
+if mode == "notconsole":
+    uf = UnpartedFile()
+    uf.run_all()
+else:
+    menu = MenuHoster()
+    menu.hostmenu()
 

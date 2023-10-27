@@ -17,7 +17,7 @@ class UnpartedFile:
         nlp.download('stopwords')
         nlp.download('wordnet')
 
-        data = pd.read_excel("Corrected_2_Updated_Preferred_titles.xlsx")
+        data = pd.read_excel("Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx")
 
         # data = pd.read_excel("/content/drive/MyDrive/Colab Notebooks/Elsevier projekt/Preferred_titles.xlsx")
         # data = pd.read_excel("/content/drive/MyDrive/Colab Notebooks/Elsevier projekt/Skralde_data.xlsx")
