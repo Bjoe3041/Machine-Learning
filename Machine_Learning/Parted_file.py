@@ -7,11 +7,13 @@ import numpy as np
 class PartedFile:
     def run_all(self):
         import pandas as pd
+        import matplotlib.pyplot as plt
+        import numpy as np
         from sklearn.model_selection import train_test_split
         from sklearn.linear_model import LogisticRegression
         from sklearn.metrics import accuracy_score
         from sklearn.feature_extraction.text import TfidfVectorizer
-        from Vectorizer import  Vectorizer
+        from Vectorizer import Vectorizer
         import os
 
         data = pd.read_excel("./Corrected_2_Updated_Preferred_titles.xlsx")
@@ -22,10 +24,10 @@ class PartedFile:
         print("data_preprocessed")
         print(data_preprocessed.head(10).to_string())
 
-        #_______ vectorizer
+        # _______ vectorizer
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))  # TODO agree on ngram range
         vectorizer = Vectorizer()
-        results = vectorizer.TFIDF_Vectorize(data_preprocessed,tfidf_vectorizer)
+        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
         X_new = results[0]  # a dataframe
         y_new = results[1]  # a list
 
@@ -34,18 +36,28 @@ class PartedFile:
         # print("combined feature matrices with values - test set")
         # print(y_new)  # just a list of 0 and 1's
 
+        # # TODO Visualize TF-IDF for Preferred Titles
+        # plt.figure(figsize=(400, 6))
+        #     # lots of titles, need long figure, smaller makes words unreadable, larger makes ticks clutter
+        # plt.bar(tfidf_pref_df_cleaned.columns, tfidf_pref_df_cleaned.mean(), label='Preferred Titles', alpha=0.7)
+        #     # alpha sets opaqueness
+        # plt.bar(tfidf_non_pref_df_cleaned.columns, tfidf_non_pref_df_cleaned.mean(), label='Non-Preferred Titles',
+        #   alpha=0.7)
+        # plt.xlabel('Terms')
+        # plt.ylabel('TF-IDF Mean Value')
+        # plt.xticks(rotation=90)
+        # plt.legend()
+        # plt.show()  # takes about 30 sec
+
         # # MODEL TRAINING
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
-            # X is the training set, 80% - y is the test set/the correct values, 20%.
-            # X is further split into 80% training data and 20% validation data,
-            # the same goes for y although these are used to validate X
+        # X is the training set, 80% - y is the test set/the correct values, 20%.
+        # X is further split into 80% training data and 20% validation data,
+        # the same goes for y although these are used to validate X
 
         # Train the logistic regression model on the new training data
         model_new = LogisticRegression(max_iter=1000)
         model_new.fit(X_train_new, y_train_new)
-
-        # print("combined feature matrices with values")
-        # print(X_train_new)  # TODO print table elsewhere (not "x_train_new")
 
         # Predict on the new validation set     MODEL ACCURACY
         y_pred_new = model_new.predict(X_val_new)
