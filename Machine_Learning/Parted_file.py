@@ -24,30 +24,44 @@ class PartedFile:
         print("data_preprocessed")
         print(data_preprocessed.head(10).to_string())
 
+        # # sort data for visualizer
+        # data_sorted = data_preprocessed.sort_values(by=['doi', 'Title_value'], ascending=[True, False])
+        #     # we are sorting by doi to get all duplicates listed together
+        #     # may be an unnecessary step
+        # pref_titles = data_sorted[data_sorted['Title_value'] == 1].reset_index(drop=True)
+        # nonpref_titles = data_sorted[data_sorted['Title_value'] == 0].reset_index(drop=True)
+        #     # seperates pref and non pref
+        # paired_titles = pd.concat([pref_titles, nonpref_titles], axis=1, ignore_index=True)
+        # paired_titles.columns = ['id_pref', 'title_pref', 'doi_pref', 'value_pref',
+        #                          'id_nonpref', 'title_nonpref', 'doi_nonpref', 'value_nonpref']
+        # paired_titles_clean = paired_titles.dropna().reset_index(drop=True);
+        #     # creates new table, reaplies column names, cleans nan-values
+        #
+        # print(paired_titles_clean.to_string())
+
         # _______ vectorizer
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))  # TODO agree on ngram range
         vectorizer = Vectorizer()
         results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
+            # takes dataframe and vectorizer and spits out df and list
+            # does the same as "sort data for visualizer?
         X_new = results[0]  # a dataframe
         y_new = results[1]  # a list
 
         print("combined feature matrices with values - training set")
         print(X_new)  # can be sorted by ".sort_values(by=['youth'])"
-        # print("combined feature matrices with values - test set")
-        # print(y_new)  # just a list of 0 and 1's
 
         # # TODO Visualize TF-IDF for Preferred Titles
-        # plt.figure(figsize=(400, 6))
-        #     # lots of titles, need long figure, smaller makes words unreadable, larger makes ticks clutter
-        # plt.bar(tfidf_pref_df_cleaned.columns, tfidf_pref_df_cleaned.mean(), label='Preferred Titles', alpha=0.7)
-        #     # alpha sets opaqueness
-        # plt.bar(tfidf_non_pref_df_cleaned.columns, tfidf_non_pref_df_cleaned.mean(), label='Non-Preferred Titles',
-        #   alpha=0.7)
-        # plt.xlabel('Terms')
-        # plt.ylabel('TF-IDF Mean Value')
-        # plt.xticks(rotation=90)
-        # plt.legend()
-        # plt.show()  # takes about 30 sec
+        sample = 200
+        print('> Creating barchart')
+        plt.figure(figsize=(sample, 15))  # Adjust the figure size as needed
+        plt.bar(X_new.columns[:sample], X_new.mean().head(sample), 0.3, alpha=0.7)
+        plt.xlabel('Terms')
+        plt.ylabel('TF-IDF Mean Value')
+        plt.xticks(rotation=90)  # Rotate x-axis labels for better readability
+        plt.title('TF-IDF Mean Values for Terms')
+        print('> Just a moment...')
+        plt.show()  # takes about 30 seconds
 
         # # MODEL TRAINING
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
@@ -65,10 +79,10 @@ class PartedFile:
         accuracy_new = accuracy_score(y_val_new, y_pred_new)
         print(str((accuracy_new) * 100) + " % - result of single run prediction")
 
-        model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))
+        model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))  # TODO explain
 
         accuracies = []
-        for i in range(50):
+        for i in range(5):
             # Split the new data into training and validation sets
             X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
 
@@ -88,25 +102,25 @@ class PartedFile:
 
         print("\n" + str((sum(accuracies) / len(accuracies)) * 100) + " % - avg of multiple run test")
 
-        while (True):
-            print("inputs: title to evaluate, 'q' to quit.")
-            s = input()
-            print("input: ", s)
-            if (s.lower() == "q"):
-                break
-            # if(s.lower() == "eval"):
-            vectored = tfidf_vectorizer.transform([s])
-            value = model_new.predict_proba(vectored)
-
-            os.system('cls')
-            RED = '\033[91m'
-            GREEN = '\033[92m'
-            RESET = '\033[0m'  # Reset to default color
-            the_value = value[0][1]
-            header = ""
-            if (the_value > 0.5):
-                header = GREEN
-            else:
-                header = RED
-            print(header + "input: ", s)
-            print("{:.3f}".format(value[0][1]) + RESET)
+        # while (True):
+        #     print("inputs: title to evaluate, 'q' to quit.")
+        #     s = input()
+        #     print("input: ", s)
+        #     if (s.lower() == "q"):
+        #         break
+        #     # if(s.lower() == "eval"):
+        #     vectored = tfidf_vectorizer.transform([s])
+        #     value = model_new.predict_proba(vectored)
+        #
+        #     os.system('cls')
+        #     RED = '\033[91m'
+        #     GREEN = '\033[92m'
+        #     RESET = '\033[0m'  # Reset to default color
+        #     the_value = value[0][1]
+        #     header = ""
+        #     if (the_value > 0.5):
+        #         header = GREEN
+        #     else:
+        #         header = RED
+        #     print(header + "input: ", s)
+        #     print("{:.3f}".format(value[0][1]) + RESET)
