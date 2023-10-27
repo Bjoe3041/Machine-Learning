@@ -85,9 +85,6 @@ class UnpartedFile:
             combined_titles_cleaned = paired_data_cleaned[f'{column_name}_pref'].tolist() + paired_data_cleaned[
                 f'{column_name}_non_pref'].tolist()
 
-            print("combined titles cleaned head 10 to string")  # TODO never reaches this?
-            print(combined_titles_cleaned.head(10).to_string())
-
             return combined_titles_cleaned
 
         def rename_columns(data):
