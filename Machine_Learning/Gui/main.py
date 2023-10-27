@@ -1,9 +1,9 @@
 from Unparted_file import UnpartedFile
 from MenuHoster import MenuHoster
 
-mode = "console"
+mode = "notconsole"
 
-if mode == "notconsole":
+if mode == "console":
     uf = UnpartedFile()
     uf.run_all()
 else:
