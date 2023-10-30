@@ -51,7 +51,9 @@ class PartedFile:
         print("combined feature matrices with values - training set")
         print(X_new)  # can be sorted by ".sort_values(by=['youth'])"
 
-        # # TODO Visualize TF-IDF for Preferred Titles
+        # Visualize TF-IDF for Preferred Titles
+        # TODO sort the data so the 0-values wont be shown
+        # TODO improve the visuals so it's easier to see individual values? fx make a grid/color pref/nonpref
         sample = 200
         print('> Creating barchart')
         plt.figure(figsize=(sample, 15))  # Adjust the figure size as needed
@@ -79,7 +81,8 @@ class PartedFile:
         accuracy_new = accuracy_score(y_val_new, y_pred_new)
         print(str((accuracy_new) * 100) + " % - result of single run prediction")
 
-        model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))  # TODO explain
+        model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))  # returns predicted and rest value?
+        # print() TODO print this ^
 
         accuracies = []
         for i in range(5):
@@ -97,6 +100,7 @@ class PartedFile:
             accuracy_new = accuracy_score(y_val_new, y_pred_new)
             accuracies.append(accuracy_new)
 
+            # TODO scale with range, fx if range > 50 only print for each x number
             sys.stdout.write('.')  # a loading bar while waiting for the while loop to finish
             sys.stdout.flush()
 
