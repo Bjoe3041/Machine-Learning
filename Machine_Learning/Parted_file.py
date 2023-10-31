@@ -42,7 +42,7 @@ class PartedFile:
         print(paired_titles_clean.to_string())  # df
         print(combined_titles_cleaned)  # list
 
-        # _______ vectorizer
+        # _______ vectorizer TODO needs a rework or to be phased out
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
         vectorizer = Vectorizer()
         results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
@@ -74,21 +74,23 @@ class PartedFile:
         tfidf_nonpref_df_nz = tfidf_nonpref_df[tfidf_nonpref_df != 0.0]
 
         # TODO improve the visuals so it's easier to see individual values?
-        sizer = (len(tfidf_pref_df_nz)*2) - len(tfidf_nonpref_df_nz) - 179  # hardcoded ftw
+        sizer = (len(tfidf_pref_df_nz)*2) - len(tfidf_nonpref_df_nz)
+        sample = 100
         print('term list/sample size: ' + str(sizer))
-        print('> Creating barchart')
 
-        plt.figure(figsize=(sizer, 15))
-        plt.bar(tfidf_pref_df_nz.columns, tfidf_pref_df_nz.mean(), label='Preferred Titles',
-                alpha=0.7)  # alpha sets opaqueness
-        plt.bar(tfidf_nonpref_df_nz.columns, tfidf_nonpref_df_nz.mean(), label='Non-Preferred Titles',
-                alpha=0.7)
-        plt.axhline()
+        print('> Creating barchart')
+        plt.figure(figsize=(sizer - sample, 15))  # about 379*10 pixels wide
+        plt.bar(tfidf_pref_df_nz.columns[:sample], tfidf_pref_df_nz.mean().head(sample),
+                label='Preferred Titles', width=0.3, alpha=0.7)  # alpha sets opaqueness
+        plt.bar(tfidf_nonpref_df_nz.columns[:sample], tfidf_nonpref_df_nz.mean().head(sample),
+                label='Non-Preferred Titles', width=0.3, alpha=0.7)
+        plt.axhline()  # unnecessary
         plt.grid()
         plt.xlabel('Terms')
         plt.ylabel('TFIDF Mean Value')
         plt.xticks(rotation=90)  # rotates labels for readability
         plt.title('TFIDF Mean Values for Terms')
+        # TODO need a legend
         print('> Just a moment...')
         plt.show()
 
