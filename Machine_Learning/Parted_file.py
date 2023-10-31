@@ -70,13 +70,14 @@ class PartedFile:
         print(X_new_detailed)  # can be sorted by ".sort_values(by=['youth'])"
 
         # Visualize TF-IDF for Preferred Titles
-        # TODO sort the data so the 0-values wont be shown
-        tfidf_pref_df_nz = tfidf_pref_df[tfidf_pref_df != 0.0]
+        tfidf_pref_df_nz = tfidf_pref_df[tfidf_pref_df != 0.0]  # removes zero-values
         tfidf_nonpref_df_nz = tfidf_nonpref_df[tfidf_nonpref_df != 0.0]
+
         # TODO improve the visuals so it's easier to see individual values?
         sizer = (len(tfidf_pref_df_nz)*2) - len(tfidf_nonpref_df_nz) - 179  # hardcoded ftw
         print('term list/sample size: ' + str(sizer))
         print('> Creating barchart')
+
         plt.figure(figsize=(sizer, 15))
         plt.bar(tfidf_pref_df_nz.columns, tfidf_pref_df_nz.mean(), label='Preferred Titles',
                 alpha=0.7)  # alpha sets opaqueness
@@ -90,21 +91,6 @@ class PartedFile:
         plt.title('TFIDF Mean Values for Terms')
         print('> Just a moment...')
         plt.show()
-
-        # # OLD
-        # sample = 200
-        # X_new_sortbyval = X_new[(X_new.sum(axis=1) > 0.0) | (X_new.sum(axis=1) < 0.0)]
-        # print('> Creating barchart')
-        # plt.figure(figsize=(sample, 15))  # Adjust the figure size as needed
-        # plt.bar(X_new_sortbyval.columns[:sample], X_new_sortbyval.mean().head(sample), 0.3, alpha=0.7)
-        # plt.axhline()  # add a line at zero
-        # plt.grid()  # add grid
-        # plt.xlabel('Terms')
-        # plt.ylabel('TF-IDF Mean Value')
-        # plt.xticks(rotation=90)  # Rotate x-axis labels for better readability
-        # plt.title('TF-IDF Mean Values for Terms')
-        # print('> Just a moment...')
-        # plt.show()  # takes about 30 seconds
 
         # # MODEL TRAINING
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
