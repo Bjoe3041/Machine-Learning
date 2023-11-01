@@ -65,3 +65,11 @@ class MLController:
         with open('Machine_Learning/modelpath.txt', 'w') as file:
             file.write(str(content))
 
+
+    @staticmethod
+    def has_modelpath():
+        with open('Machine_Learning/modelpath.txt', 'r') as file:
+            return (file.read() != "")
+
+    # Todo methods: modelpath_matches_save
+    # Todo methods: has_saves
