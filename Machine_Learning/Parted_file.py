@@ -25,19 +25,19 @@ class PartedFile:
 
         # sort data for visualizer
         data_sorted = data_preprocessed.sort_values(by=['doi', 'Title_value'], ascending=[True, False])
-            # we are sorting by doi to get all duplicates listed together
-            # may be an unnecessary step
+        # we are sorting by doi to get all duplicates listed together
+        # may be an unnecessary step
         pref_titles = data_sorted[data_sorted['Title_value'] == 1].reset_index(drop=True)
         nonpref_titles = data_sorted[data_sorted['Title_value'] == 0].reset_index(drop=True)
-            # seperates pref and non pref
+        # seperates pref and non pref
         paired_titles = pd.concat([pref_titles, nonpref_titles], axis=1, ignore_index=True)
         paired_titles.columns = ['id_pref', 'title_pref', 'doi_pref', 'value_pref',
                                  'id_nonpref', 'title_nonpref', 'doi_nonpref', 'value_nonpref']
         paired_titles_clean = paired_titles.dropna().reset_index(drop=True);
-            # creates new table, reaplies column names, cleans nan-values
+        # creates new table, reaplies column names, cleans nan-values
         combined_titles_cleaned = (paired_titles_clean['title_pref'].tolist() +
                                    paired_titles_clean['title_nonpref'].tolist())
-            # assigns new list with pref/nonpref
+        # assigns new list with pref/nonpref
         # continues past next code block
         print(paired_titles_clean.to_string())  # df
         print(combined_titles_cleaned)  # list
@@ -53,44 +53,43 @@ class PartedFile:
 
         # sort data for visualizer continued
         tfidf_matrix_cleaned = tfidf_vectorizer.fit_transform(combined_titles_cleaned)
-            # creates a vectorizer
+        # creates a vectorizer
         tfidf_pref = tfidf_matrix_cleaned[:len(paired_titles_clean)]
         tfidf_nonpref = tfidf_matrix_cleaned[len(paired_titles_clean):]
-            # splits the vector into pref and non pref
+        # splits the vector into pref and non pref
         tfidf_pref_df = pd.DataFrame(tfidf_pref.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
         tfidf_nonpref_df = pd.DataFrame(tfidf_nonpref.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
-            # converts sparse matrices into dataframes
+        # converts sparse matrices into dataframes
         print(tfidf_pref_df.head(), tfidf_nonpref_df.head())
         X = tfidf_pref_df - tfidf_nonpref_df
         X_new_detailed = pd.concat([X, -X], ignore_index=True)
-            # creates a new feature matrix
+        # creates a new feature matrix
         y_new_detailed = ([1] * len(X)) + ([0] * len(X))
-            # creates a new target vector
+        # creates a new target vector
         print("combined feature matrices with values - training set")
         print(X_new_detailed)  # can be sorted by ".sort_values(by=['youth'])"
 
         # Visualize TF-IDF for Preferred Titles
         tfidf_pref_df_nz = tfidf_pref_df[tfidf_pref_df != 0.0]  # removes zero-values
         tfidf_nonpref_df_nz = tfidf_nonpref_df[tfidf_nonpref_df != 0.0]
-
-        # TODO improve the visuals so it's easier to see individual values?
-        sizer = (len(tfidf_pref_df_nz)*2) - len(tfidf_nonpref_df_nz)
-        sample = 100
-        print('term list/sample size: ' + str(sizer))
+        print('term list/sample size: ' + str(len(tfidf_pref_df_nz)))  # assuming nonpref and pref has the same length
 
         print('> Creating barchart')
-        plt.figure(figsize=(sizer - sample, 15))  # about 379*10 pixels wide
-        plt.bar(tfidf_pref_df_nz.columns[:sample], tfidf_pref_df_nz.mean().head(sample),
-                label='Preferred Titles', width=0.3, alpha=0.7)  # alpha sets opaqueness
-        plt.bar(tfidf_nonpref_df_nz.columns[:sample], tfidf_nonpref_df_nz.mean().head(sample),
-                label='Non-Preferred Titles', width=0.3, alpha=0.7)
-        plt.axhline()  # unnecessary
-        plt.grid()
-        plt.xlabel('Terms')
-        plt.ylabel('TFIDF Mean Value')
-        plt.xticks(rotation=90)  # rotates labels for readability
+        sample = 50
+        plt.figure(figsize=(25, sample))  # width, height - height of figure scales with samplesize
+
+        # plt.bar(ticks on y-axis = up until samplesize, width of bars = scales with mean value,
+        # label for legend, height (width) of bars, alpha = bar opaqueness)
+        plt.barh(tfidf_pref_df_nz.columns[:sample], tfidf_pref_df_nz.mean().head(sample),
+                 label='Preferred Titles', height=0.3, alpha=0.7)
+        plt.barh(tfidf_nonpref_df_nz.columns[:sample], tfidf_nonpref_df_nz.mean().head(sample),
+                 label='Non-Preferred Titles', height=0.3, alpha=0.7)
+
+        plt.grid()  # makes grid visible, for better visualization
+        plt.ylabel('Terms')
+        plt.xlabel('TFIDF Mean Value')
         plt.title('TFIDF Mean Values for Terms')
-        # TODO need a legend
+        plt.legend()  # adds bar label/color legend
         print('> Just a moment...')
         plt.show()
 
@@ -110,11 +109,11 @@ class PartedFile:
         accuracy_new = accuracy_score(y_val_new, y_pred_new)
         print(str((accuracy_new) * 100) + " % - result of single run prediction")
 
-        model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))  # returns predicted and rest value?
-        # print() TODO print this by assigning ^
+        prob_est = model_new.predict_proba(tfidf_vectorizer.transform(["Test"]))  # returns predicted and rest value?
+        print('probability estimation: ' + str(prob_est))
 
         accuracies = []
-        for i in range(5):
+        for i in range(50):
             # Split the new data into training and validation sets
             X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.2)
 
@@ -129,8 +128,7 @@ class PartedFile:
             accuracy_new = accuracy_score(y_val_new, y_pred_new)
             accuracies.append(accuracy_new)
 
-            # TODO scale with range, fx if range > 50 only print for each x number
-            sys.stdout.write('.')  # a loading bar while waiting for the while loop to finish
+            sys.stdout.write('.')  # a loading bar while waiting for the while loop to finish, does not scale well
             sys.stdout.flush()
 
         print("\n" + str((sum(accuracies) / len(accuracies)) * 100) + " % - avg of multiple run test")
