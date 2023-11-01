@@ -3,10 +3,8 @@ import MenuHoster
 import os
 mode = "notconsole"
 # os.chdir(os.path.abspath(os.path.join("..", "..") + "\\"))
-
 machine_learning_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-
-# Now, 'machine_learning_dir' contains the path to the 'Machine-Learning' directory
+os.chdir(machine_learning_dir)
 print("["+machine_learning_dir+"]")
 
 # Machine-Learning

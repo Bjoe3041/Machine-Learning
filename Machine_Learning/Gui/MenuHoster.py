@@ -111,7 +111,8 @@ class MenuHoster:
     def thrd_open_apiview():
         current_directory = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_directory, "api_server.py")
-        os.system(f"{sys.executable} {script_path}")
+        print(script_path)
+        os.system(f"{sys.executable} \"{script_path}\"")
 
     def open_apiview(self):
         apiview_thread = threading.Thread(target=self.thrd_open_apiview)
