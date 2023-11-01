@@ -37,7 +37,7 @@ class MenuHoster:
     def hostmenu(self):
         def refresh_options():
             new_options = getoptions()
-            dropdown_var.set("Select Model") # Todo, set to current selected file from folder instead
+            dropdown_var.set(MLController().getchosenmodelpath()) # Todo, set to current selected file from folder instead
             dropdown_menu['menu'].delete(0, 'end')
             for option in new_options:
                 dropdown_menu['menu'].add_command(label=option, command=lambda opt=option: set_modelname(opt))
@@ -70,7 +70,7 @@ class MenuHoster:
         options = getoptions()
         dropdown_var = tk.StringVar()
         options.append("None Selected")
-        dropdown_var.set(options[0])
+        dropdown_var.set(MLController().getchosenmodelpath())
 
         dropdown_menu = tk.OptionMenu(root, dropdown_var, *options)
         dropdown_menu.config(width=53)
