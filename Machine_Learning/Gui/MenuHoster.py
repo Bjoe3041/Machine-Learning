@@ -5,8 +5,47 @@ import threading
 from Controller.MLController import MLController
 
 
+def read_file_content(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        return content
+    except FileNotFoundError:
+        return "File not found"
+
+
+def update_label_content(label):
+    file_path = 'Machine_Learning/modelpath.txt'  # Replace with your file path
+    content = read_file_content(file_path)
+    label.config(text=content)
+
+
+def getoptions():
+    reallist = []
+    file_list = os.listdir(os.getcwd() + '/Machine_Learning/Saves')
+    for i in range(0, len(file_list)):
+        name = file_list[i].removeprefix("model_")
+        if "vector_" not in name:
+            # print(name)
+            reallist.append(name)
+    return reallist
+
+
 class MenuHoster:
     def hostmenu(self):
+        def refresh_options():
+            new_options = getoptions()
+            dropdown_var.set("Select Model")
+            dropdown_menu['menu'].delete(0, 'end')
+            for option in new_options:
+                dropdown_menu['menu'].add_command(label=option, command=lambda opt=option: set_modelname(opt))
+
+        def set_modelname(content):
+            print("name SET")
+            mlc = MLController()
+            mlc.setchosenmodelpath(content)
+            update_label_content(label)
+
         root = tk.Tk()
         root.title("Machine Learning Menu")
         window_size = 400
@@ -20,9 +59,39 @@ class MenuHoster:
         button_trial = tk.Button(root, width=50, text="Trial run", command=self.open_trialview)
         button_accuracy = tk.Button(root, width=50, text="Accuracy", command=self.open_accuracyview)
         button_api = tk.Button(root, width=50, text="Host as api", command=self.open_apiview)
+        button_train = tk.Button(root, width=50, text="Train model again", command=self.open_trainview)
+
+        dropdown_var = tk.StringVar()
+        dropdown_var.set("Select Model")
+        dropdown_menu = tk.OptionMenu(root, dropdown_var, *getoptions(), command=set_modelname)
+        dropdown_menu.config(width=53)
+
+        button_frame = tk.Frame(root, width=359, height=20)
+        button_frame.pack_propagate(False)
+        update_button = tk.Button(button_frame, text="Update Options", command=refresh_options)
+        label = tk.Label(button_frame, text="", wraplength=400)  # Adjust wraplength as needed
+        update_label_content(label)
+
+        label_modeldesc = tk.Label(button_frame, text="", wraplength=400)  # Adjust wraplength as needed
+        label_modeldesc.config(text="Selected Model:")
+
         button_trial.pack()
         button_accuracy.pack()
         button_api.pack()
+        button_train.pack()
+        dropdown_menu.pack(padx=0, pady=(120, 0))
+        button_frame.pack(side="top")
+
+        label_modeldesc.pack(side="left", padx=0, pady=0, anchor='w')
+        label.pack(side="left", padx=5)
+        update_button.pack(side="right")
+
+        def on_option_menu_map(event):
+            # This function is triggered when the OptionMenu is mapped to the screen
+            refresh_options()
+
+        dropdown_menu.bind("<Enter>", on_option_menu_map)
+
         root.mainloop()
 
     def open_trialview(self):
@@ -44,13 +113,26 @@ class MenuHoster:
         apiview_thread.start()
 
     @staticmethod
+    def thrd_open_trainview():
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_directory, "train_ai.py")
+        os.system(f"{sys.executable} {script_path}")
+
+    def open_trainview(self):
+        trainview_thread = threading.Thread(target=self.thrd_open_trainview)
+        trainview_thread.daemon = True
+        trainview_thread.start()
+
+    @staticmethod
     def retrain():
         mlc = MLController()
-        modelname = "model_test1_gaming"
-        vectorizername = "vector_test1_gaming"
+        name = mlc.getchosenmodelpath()
 
-        pth = os.getcwd()
-        print(os.listdir(pth))
+        modelname = "model_" + name
+        vectorizername = "vector_" + name
+
+        # pth = os.getcwd()
+        # print(os.listdir(pth))
 
         model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
         mlc.savemodel(model, vectorizer, modelname, vectorizername)
@@ -58,8 +140,9 @@ class MenuHoster:
     @staticmethod
     def quicktest():
         mlc = MLController()
-        modelname = "model_test1_gaming"
-        vectorizername = "vector_test1_gaming"
+        name = mlc.getchosenmodelpath()
+        modelname = "model_" + name
+        vectorizername = "vector_" + name
         # mlc.savemodel(model, vectorizer, modelname, vectorizername)
         loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
 

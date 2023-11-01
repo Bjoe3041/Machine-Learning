@@ -43,13 +43,25 @@ class MLController:
     def loadmodel(model_filename, vectorizer_filename):
         # Load the trained model from disk
         save_directory = "Machine_Learning/Saves/"
-        loaded_model = joblib.load(save_directory+model_filename+'.pkl')
+        loaded_model = joblib.load(save_directory+model_filename)
 
         # Load the vectorizer from disk
-        loaded_vectorizer = joblib.load(save_directory+vectorizer_filename+'.pkl')
+        loaded_vectorizer = joblib.load(save_directory+vectorizer_filename)
 
         return loaded_model, loaded_vectorizer
 
     @staticmethod
     def evaluate(model, vectorizer, inputstring):
         return model.predict_proba(vectorizer.transform([inputstring]))[0][1]
+
+    @staticmethod
+    def getchosenmodelpath():
+        with open('Machine_Learning/modelpath.txt', 'r') as file:
+            content = file.read()
+        return content
+
+    @staticmethod
+    def setchosenmodelpath(content):
+        with open('Machine_Learning/modelpath.txt', 'w') as file:
+            file.write(str(content))
+

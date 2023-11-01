@@ -28,8 +28,9 @@ def openapi():
 
 def ml_getvalue(value):
     mlc = MLController()
-    modelname = "model_test1_gaming"
-    vectorizername = "vector_test1_gaming"
+    name = mlc.getchosenmodelpath()
+    modelname = "model_"+name
+    vectorizername = "vector_"+name
     loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
 
     retvalue = mlc.evaluate(loadedmodel, loadedvectorizer, value)
