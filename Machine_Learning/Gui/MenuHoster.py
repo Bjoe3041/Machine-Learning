@@ -22,7 +22,9 @@ def update_label_content(label):
 
 def getoptions():
     reallist = []
-    file_list = os.listdir(os.getcwd() + '/Machine_Learning/Saves')
+    # print(os.getcwd())
+
+    file_list = os.listdir(os.getcwd() + '\\Machine_Learning\\Saves')
     for i in range(0, len(file_list)):
         name = file_list[i].removeprefix("model_")
         if "vector_" not in name:
@@ -35,7 +37,7 @@ class MenuHoster:
     def hostmenu(self):
         def refresh_options():
             new_options = getoptions()
-            dropdown_var.set("Select Model")
+            dropdown_var.set("Select Model") # Todo, set to current selected file from folder instead
             dropdown_menu['menu'].delete(0, 'end')
             for option in new_options:
                 dropdown_menu['menu'].add_command(label=option, command=lambda opt=option: set_modelname(opt))
@@ -61,15 +63,20 @@ class MenuHoster:
         button_api = tk.Button(root, width=50, text="Host as api", command=self.open_apiview)
         button_train = tk.Button(root, width=50, text="Train model again", command=self.open_trainview)
 
-        dropdown_var = tk.StringVar()
-        dropdown_var.set("Select Model")
-        dropdown_menu = tk.OptionMenu(root, dropdown_var, *getoptions(), command=set_modelname)
-        dropdown_menu.config(width=53)
-
         button_frame = tk.Frame(root, width=359, height=20)
         button_frame.pack_propagate(False)
-        update_button = tk.Button(button_frame, text="Update Options", command=refresh_options)
         label = tk.Label(button_frame, text="", wraplength=400)  # Adjust wraplength as needed
+
+        options = getoptions()
+        dropdown_var = tk.StringVar()
+        options.append("None Selected")
+        dropdown_var.set(options[0])
+
+        dropdown_menu = tk.OptionMenu(root, dropdown_var, *options)
+        dropdown_menu.config(width=53)
+
+
+        update_button = tk.Button(button_frame, text="Update Options", command=refresh_options)
         update_label_content(label)
 
         label_modeldesc = tk.Label(button_frame, text="", wraplength=400)  # Adjust wraplength as needed
@@ -90,7 +97,7 @@ class MenuHoster:
             # This function is triggered when the OptionMenu is mapped to the screen
             refresh_options()
 
-        dropdown_menu.bind("<Enter>", on_option_menu_map)
+        dropdown_menu.bind("<Enter>", on_option_menu_map) ##Sometimes runs in wacky order, be careful
 
         root.mainloop()
 
@@ -105,7 +112,6 @@ class MenuHoster:
         current_directory = os.path.dirname(os.path.abspath(__file__))
         script_path = os.path.join(current_directory, "api_server.py")
         os.system(f"{sys.executable} {script_path}")
-        # os.system(f"{sys.executable} api_server.py")
 
     def open_apiview(self):
         apiview_thread = threading.Thread(target=self.thrd_open_apiview)
@@ -130,10 +136,6 @@ class MenuHoster:
 
         modelname = "model_" + name
         vectorizername = "vector_" + name
-
-        # pth = os.getcwd()
-        # print(os.listdir(pth))
-
         model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
         mlc.savemodel(model, vectorizer, modelname, vectorizername)
 

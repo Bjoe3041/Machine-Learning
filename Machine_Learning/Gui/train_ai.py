@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from Controller.MLController import MLController
 
@@ -38,6 +39,7 @@ def btn_handle():
     name = entry.get()
     modelname = "model_" + name
     vectorizername = "vector_" + name
+    print(os.listdir(os.getcwd()))
     model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
     mlc.savemodel(model, vectorizer, modelname, vectorizername)
 
