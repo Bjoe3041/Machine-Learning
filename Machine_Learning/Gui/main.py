@@ -10,6 +10,16 @@ os.chdir(machine_learning_dir)
 print("[" + machine_learning_dir + "]")
 
 
+def topercent(val1, val2):
+    valsum = val1 + val2
+    x = 1 / valsum
+    return val1 * x, val2 * x
+
+
+p = topercent(0.7, 0.3)
+print(p)
+
+
 # Machine-Learning
 #   Machine_Learning
 #       Controller

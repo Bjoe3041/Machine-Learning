@@ -76,7 +76,7 @@ class MenuHoster:
         dropdown_menu.config(width=53)
 
 
-        update_button = tk.Button(button_frame, text="Update Options", command=refresh_options)
+        update_button = tk.Button(button_frame, text="⭮", command=refresh_options)
         update_label_content(label)
 
         label_modeldesc = tk.Label(button_frame, text="", wraplength=400)  # Adjust wraplength as needed
@@ -98,6 +98,13 @@ class MenuHoster:
             refresh_options()
 
         dropdown_menu.bind("<Enter>", on_option_menu_map) ##Sometimes runs in wacky order, be careful
+
+
+        # Some fun stuff
+        # nerd_emoji = "\U0001F913"  # Unicode for Nerd Face emoji
+        # label = tk.Label(root, text=nerd_emoji, font=("Arial", 10), fg='#24242b', borderwidth=4, anchor='s')
+        # label.pack()
+        # some fun stuff
 
         root.mainloop()
 
