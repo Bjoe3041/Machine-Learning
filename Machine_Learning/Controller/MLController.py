@@ -31,22 +31,47 @@ class MLController:
 
     @staticmethod
     def savemodel(model, vectorizer, modelname, vectorizername):
+        illegal_characters_and_names = [
+            '<', '>', ':', '"', '/', '\\', '|', '?', '*',  # Illegal characters for Windows
+            'CON', 'PRN', 'AUX', 'NUL',  # Reserved filenames
+            'COM1', 'COM2', 'COM3', 'COM4', 'COM5',  # More reserved filenames
+            'COM6', 'COM7', 'COM8', 'COM9',
+            'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5',
+            'LPT6', 'LPT7', 'LPT8', 'LPT9'
+        ]
+
+        def filtername(name):
+            tempname = name
+            for char in illegal_characters_and_names:  # Remove illegal symbols from the filename
+                if char in tempname:
+                    tempname = tempname.replace(char, "-")
+
+            for reserved_name in illegal_characters_and_names[
+                                 8:]:  # This slices the list to only include reserved names
+                if tempname.upper().startswith(reserved_name):  # They are always caps btw
+                    tempname = tempname.replace(reserved_name,
+                                                reserved_name + "_")  # just add something to it i suppose
+            return tempname
+
+        modelname = filtername(modelname)
+        vectorizername = filtername(vectorizername)
+
         save_directory = "Machine_Learning/Saves/"
         model_filename = modelname + '.pkl'
-        joblib.dump(model, save_directory+model_filename)
+        joblib.dump(model, save_directory + model_filename)
 
         # Save the vectorizer to disk
         vectorizer_filename = vectorizername + '.pkl'
-        joblib.dump(vectorizer, save_directory+vectorizer_filename)
+        joblib.dump(vectorizer, save_directory + vectorizer_filename)
 
     @staticmethod
     def loadmodel(model_filename, vectorizer_filename):
         # Load the trained model from disk
         save_directory = "Machine_Learning/Saves/"
-        loaded_model = joblib.load(save_directory+model_filename)
+        loaded_model = joblib.load(save_directory + model_filename)
 
         # Load the vectorizer from disk
-        loaded_vectorizer = joblib.load(save_directory+vectorizer_filename)
+        loaded_vectorizer = joblib.load(save_directory + vectorizer_filename)
 
         return loaded_model, loaded_vectorizer
 
@@ -64,7 +89,6 @@ class MLController:
     def setchosenmodelpath(content):
         with open('Machine_Learning/modelpath.txt', 'w') as file:
             file.write(str(content))
-
 
     @staticmethod
     def has_modelpath():
