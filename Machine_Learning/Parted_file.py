@@ -10,7 +10,7 @@ class PartedFile:
         from sklearn.feature_extraction.text import TfidfVectorizer
         from Model.Vectorizer import Vectorizer
 
-        data = pd.read_excel("./Corrected_2_Updated_Preferred_titles.xlsx")
+        data = pd.read_excel("Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx")
 
         from Model.Preprocesser import Preprocesser
         preprocesser = Preprocesser()
@@ -34,8 +34,10 @@ class PartedFile:
                                    paired_titles_clean['title_nonpref'].tolist())
         # assigns new list with pref/nonpref
         # continues past next code block
-        print(paired_titles_clean.to_string())  # df
-        print(combined_titles_cleaned)  # list
+        print('head of paired_titles_clean dataframe')
+        print(paired_titles_clean.head(10).to_string())  # df
+        print('first x of combined_titles_clean list')
+        print(combined_titles_cleaned[:10])  # list
 
         # _______ vectorizer TODO needs a rework or to be phased out
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
@@ -70,7 +72,7 @@ class PartedFile:
         print('term list/sample size: ' + str(len(tfidf_pref_df_nz)))  # assuming nonpref and pref has the same length
 
         print('> Creating barchart')
-        sample = 50
+        sample = 100
         plt.figure(figsize=(25, sample))  # width, height - height of figure scales with samplesize
 
         # plt.bar(ticks on y-axis = up until samplesize, width of bars = scales with mean value,
