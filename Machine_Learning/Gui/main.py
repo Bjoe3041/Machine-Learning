@@ -1,7 +1,9 @@
-import Unparted_file
 import MenuHoster
 import os
 import subprocess
+from Unparted_file import UnpartedFile
+from Parted_file import PartedFile
+from MenuHoster import MenuHoster
 
 mode = "notconsole"
 # os.chdir(os.path.abspath(os.path.join("..", "..") + "\\"))
@@ -39,9 +41,12 @@ def install_dependencies():
 
 install_dependencies()
 
-if mode == "console":
-    uf = Unparted_file.UnpartedFile()
+if mode == "console_UP":
+    uf = UnpartedFile()
     uf.run_all()
+elif mode == "console_P":
+    pf = PartedFile()
+    pf.run_all()
 else:
-    menu = MenuHoster.MenuHoster()
+    menu = MenuHoster()
     menu.hostmenu()
