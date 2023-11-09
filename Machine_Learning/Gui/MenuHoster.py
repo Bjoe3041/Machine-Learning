@@ -117,7 +117,7 @@ class MenuHoster:
     @staticmethod
     def thrd_open_apiview():
         current_directory = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(current_directory, "api_server.py")
+        script_path = os.path.join(current_directory, "MenuApi.py")
         print(script_path)
         os.system(f"{sys.executable} \"{script_path}\"")
 
@@ -129,7 +129,7 @@ class MenuHoster:
     @staticmethod
     def thrd_open_trainview():
         current_directory = os.path.dirname(os.path.abspath(__file__))
-        script_path = os.path.join(current_directory, "train_ai.py")
+        script_path = os.path.join(current_directory, "MenuTrain.py")
         os.system(f"{sys.executable} {script_path}")
 
     def open_trainview(self):

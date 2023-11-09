@@ -4,6 +4,7 @@ import subprocess
 from Unparted_file import UnpartedFile
 from Parted_file import PartedFile
 from MenuHoster import MenuHoster
+import numpy as np
 
 mode = "notconsole"
 # os.chdir(os.path.abspath(os.path.join("..", "..") + "\\"))
@@ -18,8 +19,9 @@ def topercent(val1, val2):
     return val1 * x, val2 * x
 
 
-p = topercent(0.7, 0.3)
-print(p)
+p = topercent(0.83, 0.66)
+print("Percentages: ", p)
+print("Delta: ", np.abs(p[1] - p[0]))
 
 
 # Machine-Learning
@@ -27,6 +29,7 @@ print(p)
 #       Controller
 #       Gui
 #           main.py
+#
 #       Model
 #       Saves
 #       Corrected_2
