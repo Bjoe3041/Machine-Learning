@@ -144,7 +144,7 @@ class MenuHoster:
 
         modelname = "model_" + name
         vectorizername = "vector_" + name
-        model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
+        model, vectorizer = mlc.trainmodel_excel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
         mlc.savemodel(model, vectorizer, modelname, vectorizername)
 
     @staticmethod

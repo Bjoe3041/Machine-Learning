@@ -3,13 +3,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+import ApiAccess.ApiAccess
 from Model.Vectorizer import Vectorizer
 from Model.Preprocesser import Preprocesser
 
 
 class MLController:
     @staticmethod
-    def trainmodel(datapath):
+    def trainmodel_excel(datapath):
         data = pd.read_excel(datapath)
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
@@ -28,6 +30,30 @@ class MLController:
         model_new.fit(X_train_new, y_train_new)
 
         return model_new, tfidf_vectorizer
+
+    @staticmethod
+    def trainmodel_database():
+        articles = ApiAccess.ApiAccess.get_articles()
+        data = pd.DataFrame(articles)
+
+        preprocesser = Preprocesser()
+        data_preprocessed = preprocesser.preprocess_excel_column(data, "title")
+        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
+        vectorizer = Vectorizer()
+        results = vectorizer.TFIDF_ModularVectorize(data_preprocessed, "title", "title_is_preferred", tfidf_vectorizer)
+        X_new = results[0]
+        y_new = results[1]
+
+        X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.01)
+
+        # Train the logistic regression model on the new training data
+        model_new = LogisticRegression(max_iter=1000)
+        model_new.fit(X_train_new, y_train_new)
+
+        return model_new, tfidf_vectorizer
+
+        pass  # TODO
+        # return model_new, tfidf_vectorizer
 
     @staticmethod
     def savemodel(model, vectorizer, modelname, vectorizername):

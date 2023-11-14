@@ -40,7 +40,17 @@ def btn_handle():
     modelname = "model_" + name
     vectorizername = "vector_" + name
     print(os.listdir(os.getcwd()))
-    model, vectorizer = mlc.trainmodel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
+    model, vectorizer = mlc.trainmodel_excel('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
+    # model, vectorizer = mlc.trainmodel_database('Machine_Learning/Corrected_2_Updated_Preferred_titles.xlsx')
+    mlc.savemodel(model, vectorizer, modelname, vectorizername)
+
+
+def btn_handle_trainfromdb():
+    mlc = MLController()
+    name = entry.get()
+    modelname = "model_" + name
+    vectorizername = "vector_" + name
+    model, vectorizer = mlc.trainmodel_database()
     mlc.savemodel(model, vectorizer, modelname, vectorizername)
 
 
@@ -52,7 +62,10 @@ entry.bind('<FocusOut>', on_focusout)
 labelTitle.grid(row=0, column=0)
 entry.grid(row=1, column=0, padx=30, pady=10)
 
-button_confirm = tk.Button(newwindow, width=50, text="Train model again", command=btn_handle, fg='#c68be8', bg='#2f1e38', relief='flat', highlightcolor='#24182b', highlightbackground='#24182b', activebackground='#c68be8')
+button_confirm = tk.Button(newwindow, width=50, text="Train model again - from excel", command=btn_handle, fg='#c68be8', bg='#2f1e38', relief='flat', highlightcolor='#24182b', highlightbackground='#24182b', activebackground='#c68be8')
 button_confirm.grid(row=2, column=0, columnspan=2)
+
+button_confirm_db = tk.Button(newwindow, width=50, text="Train model again - from database", command=btn_handle_trainfromdb, fg='#c68be8', bg='#2f1e38', relief='flat', highlightcolor='#24182b', highlightbackground='#24182b', activebackground='#c68be8')
+button_confirm_db.grid(row=3, column=0, columnspan=2, pady=10)
 
 newwindow.mainloop()
