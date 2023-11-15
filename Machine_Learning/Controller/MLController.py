@@ -43,7 +43,6 @@ class MLController:
         results = vectorizer.TFIDF_ModularVectorize(data_preprocessed, "title", "title_is_preferred", tfidf_vectorizer)
         X_new = results[0]
         y_new = results[1]
-
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.01)
 
         # Train the logistic regression model on the new training data
@@ -52,7 +51,6 @@ class MLController:
 
         return model_new, tfidf_vectorizer
 
-        pass  # TODO
         # return model_new, tfidf_vectorizer
 
     @staticmethod

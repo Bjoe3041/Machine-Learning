@@ -56,14 +56,25 @@ class Vectorizer:
                                tfidf_vectorizer: TfidfVectorizer):
         # Extract the text data and preference indicator columns
         text_data = data[text_column]
-        preference_indicator = data[preference_column]
+
+        #
+        #   TODO: CHANGE 'True' AND 'False' TO 1 AND 0 INT 'preference_column'
+        #
+
+
+        #print(data[preference_column])
+        #preference_indicator = data[preference_column]
+        preference_indicator = data[preference_column].astype(bool).astype(int)  # may be temporary
+        print(preference_indicator)
 
         # Separate the data into preferred and non-preferred based on the preference indicator
+
         preferred_data = data[preference_indicator == 1].reset_index(drop=True)
         non_preferred_data = data[preference_indicator == 0].reset_index(drop=True)
-
         # Combine the text data of preferred and non-preferred titles
         combined_titles = pd.concat([preferred_data[text_column], non_preferred_data[text_column]])
+        #print(preferred_data)
+        #print(non_preferred_data)
 
         # Perform TF-IDF transformation on the combined titles
         tfidf_matrix = tfidf_vectorizer.fit_transform(combined_titles)
