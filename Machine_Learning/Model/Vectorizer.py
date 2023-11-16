@@ -60,11 +60,8 @@ class Vectorizer:
         #
         #   TODO: CHANGE 'True' AND 'False' TO 1 AND 0 INT 'preference_column'
         #
-
-
-        #print(data[preference_column])
-        #preference_indicator = data[preference_column]
-        preference_indicator = data[preference_column].astype(bool).astype(int)  # may be temporary
+        # preference_indicator = (data[preference_column].astype(bool)).astype(int)  # may be temporary
+        preference_indicator = data[preference_column].map({'True': 1, 'False': 0})  # may be temporary
         print(preference_indicator)
 
         # Separate the data into preferred and non-preferred based on the preference indicator
