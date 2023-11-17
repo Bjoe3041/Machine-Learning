@@ -61,8 +61,10 @@ class Vectorizer:
         #   TODO: CHANGE 'True' AND 'False' TO 1 AND 0 INT 'preference_column'
         #
         # preference_indicator = (data[preference_column].astype(bool)).astype(int)  # may be temporary
-        preference_indicator = data[preference_column].map({'True': 1, 'False': 0})  # may be temporary
-        print(preference_indicator)
+        #print("1\n", data[preference_column])
+        #print("2\n", data[preference_column].map({'True': 1, 'False': 0}))
+        #print("4\n", data[preference_column].astype(int))
+        preference_indicator = data[preference_column].astype(int)
 
         # Separate the data into preferred and non-preferred based on the preference indicator
 
@@ -72,6 +74,8 @@ class Vectorizer:
         combined_titles = pd.concat([preferred_data[text_column], non_preferred_data[text_column]])
         #print(preferred_data)
         #print(non_preferred_data)
+
+
 
         # Perform TF-IDF transformation on the combined titles
         tfidf_matrix = tfidf_vectorizer.fit_transform(combined_titles)
@@ -88,5 +92,5 @@ class Vectorizer:
         X = tfidf_pref_df - tfidf_non_pref_df
         X_new = pd.concat([X, -X], ignore_index=True)
         y_new = [1] * len(X) + [0] * len(X)
-
+        print(X_new, y_new)
         return X_new, y_new

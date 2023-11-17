@@ -40,6 +40,8 @@ class MLController:
         data_preprocessed = preprocesser.preprocess_excel_column(data, "title")
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
         vectorizer = Vectorizer()
+
+        print("TEST DATA DATA TEXT \n", data_preprocessed['title'], data_preprocessed['title_is_preferred'])
         results = vectorizer.TFIDF_ModularVectorize(data_preprocessed, "title", "title_is_preferred", tfidf_vectorizer)
         X_new = results[0]
         y_new = results[1]
@@ -50,8 +52,6 @@ class MLController:
         model_new.fit(X_train_new, y_train_new)
 
         return model_new, tfidf_vectorizer
-
-        # return model_new, tfidf_vectorizer
 
     @staticmethod
     def savemodel(model, vectorizer, modelname, vectorizername):
