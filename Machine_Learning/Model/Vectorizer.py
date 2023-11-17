@@ -72,17 +72,27 @@ class Vectorizer:
         non_preferred_data = data[preference_indicator == 0].reset_index(drop=True)
         # Combine the text data of preferred and non-preferred titles
         combined_titles = pd.concat([preferred_data[text_column], non_preferred_data[text_column]])
-        #print(preferred_data)
-        #print(non_preferred_data)
+        print("_________________________________________")
+        #print(preferred_data['title'])
+        print(preferred_data['title_is_preferred'])
+        print("_________________________________________")
+        #print(non_preferred_data['title'])
+        print(non_preferred_data['title_is_preferred'])
+        print("=========================================")
+        print(combined_titles)
+        print("_________________________________________")
+
 
 
 
         # Perform TF-IDF transformation on the combined titles
         tfidf_matrix = tfidf_vectorizer.fit_transform(combined_titles)
-
         # Split the TF-IDF vectors back into preferred and non-preferred groups
         tfidf_pref = tfidf_matrix[:len(preferred_data)]
         tfidf_non_pref = tfidf_matrix[len(preferred_data):]
+
+        #print(tfidf_pref)
+        print(tfidf_non_pref)
 
         # Convert the sparse matrices to DataFrames for ease of use
         tfidf_pref_df = pd.DataFrame(tfidf_pref.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
