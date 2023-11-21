@@ -9,23 +9,13 @@ from Model.Vectorizer import Vectorizer
 from Model.Preprocesser import Preprocesser
 
 
-        # articles = ApiAccess.ApiAccess.get_articles()
-        # db_data = pd.DataFrame(articles)
-        # data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
-        # data.columns = ['Id', 'Title', 'doi', 'Title_value']
-
-
 class MLController:
     @staticmethod
     def trainmodel_excel(datapath):
         data = pd.read_excel(datapath)
 
-        preprocesser = Preprocesser()
-        data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
-        # /\-- Preprocess data
-        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
-        vectorizer = Vectorizer()
-        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
+        data_preprocessed = MLController.preprocess(data, "Title")
+        results, tfidf_vectorizer = MLController.vectorize(data_preprocessed)
         X_new = results[0]
         y_new = results[1]
         # /\-- Vectorize data
@@ -37,6 +27,13 @@ class MLController:
         model_new.fit(X_train_new, y_train_new)
 
         return model_new, tfidf_vectorizer
+
+    @staticmethod
+    def vectorize(data_preprocessed):
+        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
+        vectorizer = Vectorizer()
+        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
+        return results, tfidf_vectorizer
 
     @staticmethod
     def trainmodel_database():
@@ -45,15 +42,10 @@ class MLController:
         data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
         data.columns = ['Id', 'title', 'doi', 'Title_value']
 
-        preprocesser = Preprocesser()
-        data_preprocessed = preprocesser.preprocess_excel_column(data, "title")
-        # /\-- Preprocess data
-        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
-        vectorizer = Vectorizer()
-        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
+        data_preprocessed = MLController.preprocess(data, "title")
+        results, tfidf_vectorizer = MLController.vectorize(data_preprocessed)
         X_new = results[0]
         y_new = results[1]
-        # /\-- Vectorize data
 
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.01)
 
@@ -62,6 +54,12 @@ class MLController:
         model_new.fit(X_train_new, y_train_new)
 
         return model_new, tfidf_vectorizer
+
+    @staticmethod
+    def preprocess(data, preprocessed_column_name):
+        preprocesser = Preprocesser()
+        data_preprocessed = preprocesser.preprocess_modular_column(data, preprocessed_column_name)
+        return data_preprocessed
 
     @staticmethod
     def savemodel(model, vectorizer, modelname, vectorizername):
