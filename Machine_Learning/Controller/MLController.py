@@ -9,10 +9,30 @@ from Model.Vectorizer import Vectorizer
 from Model.Preprocesser import Preprocesser
 
 
+        # articles = ApiAccess.ApiAccess.get_articles()
+        # db_data = pd.DataFrame(articles)
+        # data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
+        # data.columns = ['Id', 'Title', 'doi', 'Title_value']
+
+
 class MLController:
     @staticmethod
     def trainmodel_excel(datapath):
         data = pd.read_excel(datapath)
+
+        #DeBUG area
+        #
+        articles = ApiAccess.ApiAccess.get_articles()
+        db_data = pd.DataFrame(articles)
+        data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
+        data.columns = ['Id', 'Title', 'doi', 'Title_value']
+        #
+        #
+        print("data:\n")
+        print(data.columns)
+        print(data.values)
+        # Index(['Id', 'Title', 'doi', 'Title_value'], dtype='object')
+
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
         # /\-- Preprocess data
@@ -35,6 +55,9 @@ class MLController:
     def trainmodel_database():
         articles = ApiAccess.ApiAccess.get_articles()
         data = pd.DataFrame(articles)
+
+        print("data:\n")
+        print(data.columns)
 
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "title")
@@ -74,7 +97,7 @@ class MLController:
                                  8:]:  # This slices the list to only include reserved names
                 if tempname.upper().startswith(reserved_name):  # They are always caps btw
                     tempname = tempname.replace(reserved_name,
-                                                reserved_name + "_")  # just add something to it i suppose
+                                                reserved_name + "_")  # just add something to it, I suppose
             return tempname
 
         modelname = filtername(modelname)
