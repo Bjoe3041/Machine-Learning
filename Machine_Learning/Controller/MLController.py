@@ -20,19 +20,6 @@ class MLController:
     def trainmodel_excel(datapath):
         data = pd.read_excel(datapath)
 
-        #DeBUG area
-        #
-        articles = ApiAccess.ApiAccess.get_articles()
-        db_data = pd.DataFrame(articles)
-        data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
-        data.columns = ['Id', 'Title', 'doi', 'Title_value']
-        #
-        #
-        print("data:\n")
-        print(data.columns)
-        print(data.values)
-        # Index(['Id', 'Title', 'doi', 'Title_value'], dtype='object')
-
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "Title")
         # /\-- Preprocess data
@@ -54,20 +41,20 @@ class MLController:
     @staticmethod
     def trainmodel_database():
         articles = ApiAccess.ApiAccess.get_articles()
-        data = pd.DataFrame(articles)
-
-        print("data:\n")
-        print(data.columns)
+        db_data = pd.DataFrame(articles)
+        data = db_data[['id', 'title', 'doi', 'title_is_preferred']].copy()
+        data.columns = ['Id', 'title', 'doi', 'Title_value']
 
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_excel_column(data, "title")
+        # /\-- Preprocess data
         tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
         vectorizer = Vectorizer()
-
-        print("TEST DATA DATA TEXT \n", data_preprocessed['title'], data_preprocessed['title_is_preferred'])
-        results = vectorizer.TFIDF_ModularVectorize(data_preprocessed, "title", "title_is_preferred", tfidf_vectorizer)
+        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
         X_new = results[0]
         y_new = results[1]
+        # /\-- Vectorize data
+
         X_train_new, X_val_new, y_train_new, y_val_new = train_test_split(X_new, y_new, test_size=0.01)
 
         # Train the logistic regression model on the new training data
