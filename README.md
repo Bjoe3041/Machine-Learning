@@ -1,4 +1,4 @@
-#Machine-Learning
+# Machine-Learning
 A system that can train new Machine Learning models, based on data from a postgreSQL database. Allows you to create new models easily and name them. Includes a GUI to make it even easier to create new models.
 It connects to an API that returns a list of Articles, and using those articles it trains the model. It also functions as an API to use the models on JSON objects being sent to the API.
 
