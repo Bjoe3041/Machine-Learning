@@ -1,4 +1,6 @@
 import threading
+
+import numpy as np
 from flask import Flask, request, jsonify
 import tkinter as tk
 from Controller.MLController import MLController
@@ -23,18 +25,45 @@ def openapi():
 
         return jsonify({"result": result})
 
+    @app.route('/api/compare', methods=['POST'])
+    def compare_titles():
+        data = request.get_json()  # Assumes the client sends JSON data
+        title1 = data['title1']  # Assuming the client sends a JSON object with a key 'input_string'
+        title2 = data['title2']  # Assuming the client sends a JSON object with a key 'input_string'
+
+        result = ml_getpercentages(title1, title2)
+
+        return jsonify({"result": result})
+
     app.run()
 
 
-def ml_getvalue(value):
-    mlc = MLController()
-    name = mlc.getchosenmodelpath()
-    modelname = "model_"+name
-    vectorizername = "vector_"+name
-    loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
+def topercent(val1, val2):
+    valsum = val1 + val2
+    x = 1 / valsum
+    return [val1 * x, val2 * x]
 
-    retvalue = mlc.evaluate(loadedmodel, loadedvectorizer, value)
-    textConsole.insert(tk.END, "\n" + "EVAL REQUEST - ["+value+"][" + f"{retvalue:.3f}" + "]")
+
+def ml_getpercentages(input1, input2):
+    mlc = MLController()
+    eval1 = mlc.evaluatetitle(input1)
+    eval2 = mlc.evaluatetitle(input2)
+
+    p = topercent(eval1, eval2)
+
+    returnobj = {
+        "title1": [f"{p[0]*100:.3f}%", input1],
+        "title2": [f"{p[1]*100:.3f}%", input2],
+        "delta": f"{np.abs(p[1] - p[0])*100:.3f}%"
+     }
+
+    return returnobj
+
+
+def ml_getvalue(inputtitle):
+    mlc = MLController()
+    retvalue = mlc.evaluatetitle(inputtitle)
+    textConsole.insert(tk.END, "\n" + "EVAL REQUEST - [" + inputtitle + "][" + f"{retvalue:.3f}" + "]")
     return retvalue
 
 

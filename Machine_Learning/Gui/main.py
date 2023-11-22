@@ -12,18 +12,6 @@ machine_learning_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '
 os.chdir(machine_learning_dir)
 print("[" + machine_learning_dir + "]")
 
-
-def topercent(val1, val2):
-    valsum = val1 + val2
-    x = 1 / valsum
-    return val1 * x, val2 * x
-
-
-p = topercent(0.83, 0.66)
-print("Percentages: ", p)
-print("Delta: ", np.abs(p[1] - p[0]))
-
-
 # Machine-Learning
 #   Machine_Learning
 #       Controller
@@ -33,6 +21,7 @@ print("Delta: ", np.abs(p[1] - p[0]))
 #       Model
 #       Saves
 #       Corrected_2
+
 
 def install_dependencies():
     try:

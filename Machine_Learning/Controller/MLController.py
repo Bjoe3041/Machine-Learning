@@ -29,13 +29,6 @@ class MLController:
         return model_new, tfidf_vectorizer
 
     @staticmethod
-    def vectorize(data_preprocessed):
-        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
-        vectorizer = Vectorizer()
-        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
-        return results, tfidf_vectorizer
-
-    @staticmethod
     def trainmodel_database():
         articles = ApiAccess.ApiAccess.get_articles()
         db_data = pd.DataFrame(articles)
@@ -60,6 +53,13 @@ class MLController:
         preprocesser = Preprocesser()
         data_preprocessed = preprocesser.preprocess_modular_column(data, preprocessed_column_name)
         return data_preprocessed
+
+    @staticmethod
+    def vectorize(data_preprocessed):
+        tfidf_vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1, 4))
+        vectorizer = Vectorizer()
+        results = vectorizer.TFIDF_Vectorize(data_preprocessed, tfidf_vectorizer)
+        return results, tfidf_vectorizer
 
     @staticmethod
     def savemodel(model, vectorizer, modelname, vectorizername):
@@ -108,8 +108,12 @@ class MLController:
         return loaded_model, loaded_vectorizer
 
     @staticmethod
-    def evaluate(model, vectorizer, inputstring):
-        return model.predict_proba(vectorizer.transform([inputstring]))[0][1]
+    def evaluate(inputstring):
+        name = MLController.getchosenmodelpath()
+        modelname = "model_" + name
+        vectorizername = "vector_" + name
+        loadedmodel, loadedvectorizer = MLController.loadmodel(modelname, vectorizername)
+        return loadedmodel.predict_proba(loadedvectorizer.transform([inputstring]))[0][1]
 
     @staticmethod
     def getchosenmodelpath():
@@ -129,3 +133,9 @@ class MLController:
 
     # Todo methods: modelpath_matches_save
     # Todo methods: has_saves
+
+    @staticmethod
+    def evaluatetitle(inputtitle):
+        retvalue = MLController.evaluate(inputtitle)
+
+        return retvalue

@@ -150,13 +150,7 @@ class MenuHoster:
     @staticmethod
     def quicktest():
         mlc = MLController()
-        name = mlc.getchosenmodelpath()
-        modelname = "model_" + name
-        vectorizername = "vector_" + name
-        # mlc.savemodel(model, vectorizer, modelname, vectorizername)
-        loadedmodel, loadedvectorizer = mlc.loadmodel(modelname, vectorizername)
-
-        print(mlc.evaluate(loadedmodel, loadedvectorizer, "role"))
+        print(mlc.evaluate("role"))
 
 
 if __name__ == '__main__':
