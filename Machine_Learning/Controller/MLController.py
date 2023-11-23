@@ -15,6 +15,7 @@ class MLController:
         data = pd.read_excel(datapath)
 
         data_preprocessed = MLController.preprocess(data, "Title")
+        # results, tfidf_vectorizer = MLController.vectorize(data_preprocessed)
         results, tfidf_vectorizer = MLController.vectorize(data_preprocessed)
         X_new = results[0]
         y_new = results[1]
