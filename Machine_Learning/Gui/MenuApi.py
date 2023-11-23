@@ -14,9 +14,9 @@ def openapi():
     @app.route('/api/status', methods=['GET'])
     def get_status():
         textConsole.insert(tk.END, "\n" + "STATUS REQUEST")
-        return jsonify({"status": "Gaming123, we up here bois"})
+        return jsonify({"status": "Server is up"})
 
-    @app.route('/api/check', methods=['POST'])
+    @app.route('/api/predict', methods=['POST'])
     def convert_string_to_integer():
         data = request.get_json()  # Assumes the client sends JSON data
         title = data['title']  # Assuming the client sends a JSON object with a key 'input_string'
@@ -25,7 +25,7 @@ def openapi():
 
         return jsonify({"result": result})
 
-    @app.route('/api/compare', methods=['POST'])
+    @app.route('/api/predict/compare', methods=['POST'])
     def compare_titles():
         data = request.get_json()  # Assumes the client sends JSON data
         title1 = data['title1']  # Assuming the client sends a JSON object with a key 'input_string'
