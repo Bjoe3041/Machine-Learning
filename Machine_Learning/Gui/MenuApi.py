@@ -5,7 +5,6 @@ from flask import Flask, request, jsonify
 import tkinter as tk
 from Controller.MLController import MLController
 
-
 def openapi():
     app = Flask(__name__)
     print("apiview opened")
@@ -35,7 +34,8 @@ def openapi():
 
         return jsonify({"result": result})
 
-    app.run()
+    if __name__ == '__main__':
+        app.run(port=8001)
 
 
 def topercent(val1, val2):
